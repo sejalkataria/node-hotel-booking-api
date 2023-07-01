@@ -15,4 +15,17 @@ app.use('/api/users', usersRouter)
 app.use('/api/hotels', hotelsRouter)
 app.use('/api/rooms', roomsRouter)
 
+app.use((e, req, res, next) => {
+    const eStatus = e.status || 500
+    const eMessage = e.message || 'Something went wrong!'
+    return res.status(eStatus).json({
+        success: false,
+        status: eStatus,
+        message: eMessage,
+        stack: e.stack
+    })
+})
+
+
+
 module.exports = app
