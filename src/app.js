@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser=require('cookie-parser')
 require('dotenv').config()
 require('./db/mongoose')
 const authRouter = require('./routes/auth')
@@ -8,6 +9,7 @@ const roomsRouter = require('./routes/rooms')
 
 const app = express()
 
+app.use(cookieParser())
 app.use(express.json())
 
 app.use('/api/auth', authRouter)
