@@ -1,16 +1,17 @@
 const express = require('express')
 const { createHotel, updateHotel, deleteHotel, getHotel, getHotels } = require('../controllers/hotel')
+const { verifyToken } = require('../utils/verifyToken')
 
 const router = new express.Router()
 
 //create Hotel
-router.post('/', createHotel)
+router.post('/', verifyToken, createHotel)
 
 //update hotel
-router.put('/:id', updateHotel)
+router.put('/:id', verifyToken, updateHotel)
 
 //delete hotel
-router.delete('/:id', deleteHotel)
+router.delete('/:id', verifyToken, deleteHotel)
 
 //get hotel
 router.get('/:id', getHotel)

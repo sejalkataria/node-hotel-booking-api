@@ -1,5 +1,5 @@
 const User = require('../models/user')
-const createError = require('../utils/error')
+const { createError } = require('../utils/error')
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -31,10 +31,10 @@ const login = async (req, res, next) => {
         if (!isMatch) {
             return next(createError(400, 'Password does not match'))
         }
-        const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET)
+        const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
         const { password, isAdmin, ...otherDetails } = user._doc
         res.
-            cookie('access-token', token, {
+            cookie('access_token', token, {
                 httpOnly: true
             }).
             status(200).
