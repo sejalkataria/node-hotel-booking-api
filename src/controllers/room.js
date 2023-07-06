@@ -69,4 +69,28 @@ const deleteRoom = async (req, res, next) => {
     }
 }
 
-module.exports = { createRoom, updateRoom, deleteRoom }
+const getRoom = async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.id)
+        if (!room) {
+            return next(createError(404, 'Room not found'))
+        }
+        res.status(200).send(room)
+    } catch (e) {
+        next(e)
+    }
+}
+
+const getRooms = async (req, res) => {
+    try {
+        const rooms = await Room.find()
+        if (!rooms) {
+            return next(createError(404, 'no rooms found!'))
+        }
+        res.status(200).send(rooms)
+    } catch (e) {
+        next(e)
+    }
+}
+
+module.exports = { createRoom, updateRoom, deleteRoom, getRoom, getRooms }
