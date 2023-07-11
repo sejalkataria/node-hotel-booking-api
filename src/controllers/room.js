@@ -93,4 +93,37 @@ const getRooms = async (req, res) => {
     }
 }
 
-module.exports = { createRoom, updateRoom, deleteRoom, getRoom, getRooms }
+const bookRoom = async (req, res, next) => {
+    const user = req.user
+    if(!user){
+        return next(createError(403, 'you are not authorized!'))
+    }
+    try {
+        const room = await Room.findOne({ "roomNumbers._id": req.params.id })
+        const numbers = room.roomNumbers
+        const foundRoom = numbers.findIndex(z => z._id == req.params.id)
+        const unavaiable = numbers[foundRoom].unavaiableDates
+        const startDate = new Date(req.body.start)
+        const endDate = new Date(req.body.end)
+        const date = new Date(startDate)
+        const dates = []
+        while (date <= endDate) {
+            unavaiable.some((a) => {
+                if (a.getTime() === date.getTime()) {
+                    throw new Error('some dates are already booked, please check dates avaiablity')
+                }
+            })
+            dates.push(new Date(date))
+            date.setDate(date.getDate() + 1)
+        }
+        await Room.updateOne({ "roomNumbers._id": req.params.id },
+            { $push: { "roomNumbers.$.unavaiableDates": dates } }
+        )
+        res.status(200).send("Room status has been updated")
+    }
+    catch (e) {
+        next(e)
+    }
+}
+
+module.exports = { createRoom, updateRoom, deleteRoom, getRoom, getRooms, bookRoom }

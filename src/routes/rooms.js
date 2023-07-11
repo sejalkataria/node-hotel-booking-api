@@ -1,6 +1,6 @@
 const express = require('express')
 const { verifyToken } = require('../utils/verifyToken')
-const { createRoom, updateRoom, deleteRoom, getRoom, getRooms } = require('../controllers/room')
+const { createRoom, updateRoom, deleteRoom, getRoom, getRooms, bookRoom } = require('../controllers/room')
 
 const router = new express.Router()
 
@@ -18,5 +18,8 @@ router.get('/:id', getRoom)
 
 //get all rooms
 router.get('/', getRooms)
+
+//book room
+router.post('/book/:id',verifyToken, bookRoom)
 
 module.exports = router
